@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"regexp"
 
 	"github.com/InnovaCo/serve/utils/gabs"
 
@@ -66,7 +67,7 @@ func (m Manifest) GetMap(path string) map[string]Manifest {
 	}
 
 	for k, v := range mmap {
-		out[k] = Manifest{v}
+		out[k] = Manifest{tree: v}
 	}
 	return out
 }
@@ -79,13 +80,13 @@ func (m Manifest) GetArray(path string) []Manifest {
 	}
 
 	for _, v := range arr {
-		out = append(out, Manifest{v})
+		out = append(out, Manifest{tree: v})
 	}
 	return out
 }
 
 func (m Manifest) GetTree(path string) Manifest {
-	return Manifest{m.tree.Path(path)}
+	return Manifest{tree: m.tree.Path(path)}
 }
 
 func (m Manifest) FindPlugins(plugin string) ([]PluginData, error) {
@@ -117,6 +118,29 @@ func (m Manifest) DelTree(path string) error {
 
 func (m Manifest) GetPluginWithData(plugin string) PluginData {
 	return makePluginPair(plugin, m.tree)
+}
+
+func (m Manifest) ToEnvArray(prefix string) map[string]string {
+	result := make(map[string]string)
+	if children, err := m.tree.ChildrenMap(); err == nil {
+		for k, child := range children {
+			reg, _ := regexp.Compile("\\W")
+			c := Manifest{tree: child}.ToEnvArray(prefix + strings.ToUpper(string(reg.ReplaceAllString(k, "_"))) + "_")
+			for k, v := range c {
+				result[k] = v
+			}
+		}
+	} else if children, err := m.tree.Children(); err == nil {
+		for i, child := range children {
+			c := Manifest{tree: child}.ToEnvArray(prefix + strconv.Itoa(i) + "_")
+			for k, v := range c {
+				result[k] = v
+			}
+		}
+	} else {
+		result[fmt.Sprintf("%s", prefix[:len(prefix) - 1])] = fmt.Sprintf("%v", m.tree.Data())
+	}
+	return result
 }
 
 func Load(path string, vars map[string]string) *Manifest {
@@ -155,5 +179,5 @@ func makePluginPair(plugin string, data *gabs.Container) PluginData {
 		data = obj
 	}
 
-	return PluginData{plugin, PluginRegestry.Get(plugin), Manifest{data}}
+	return PluginData{plugin, PluginRegestry.Get(plugin), Manifest{tree: data}}
 }
