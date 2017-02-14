@@ -127,7 +127,7 @@ func (p DeployMarathon) Install(data manifest.Manifest) error {
 		}
 
 		for key, value := range data.GetMap("docker.parameters") {
-			doc.Docker.AddParameter(key, value)
+			doc.Docker.AddParameter(key, value.Unwrap())
 		}
 
 		app.Container = doc
