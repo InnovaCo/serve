@@ -127,7 +127,16 @@ func (p DeployMarathon) Install(data manifest.Manifest) error {
 		}
 
 		for key, value := range data.GetMap("docker.parameters") {
-			doc.Docker.AddParameter(key, value.Unwrap().(string))
+			switch key {
+			case "env":
+				envs := make([]string, 0)
+				for k, v := range data.GetMap("docker.parameters.env") {
+					envs = append(envs, fmt.Sprintf("%s=%s", k, v))
+				}
+				doc.Docker.AddParameter(key, fmt.Sprintf("[%s]", strings.Join(envs, ",")))
+			default:
+				doc.Docker.AddParameter(key, value.Unwrap().(string))
+			}
 		}
 
 		app.Container = doc
