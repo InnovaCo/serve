@@ -105,7 +105,7 @@ func (p DeployMarathon) Install(data manifest.Manifest) error {
 		app.EmptyUris()
 		app.EmptyPortDefinitions()
 
-		app.AddEnv("SERVICE_NAME", fullName) // docker-registrator: consul Name
+		app.AddEnv("SERVICE_NAME", fullName)    // docker-registrator: consul Name
 		app.AddEnv("SERVICE_CHECK_TCP", "true") // docker-registrator: consul TCP health check
 
 		doc := marathon.NewDockerContainer()
@@ -127,7 +127,7 @@ func (p DeployMarathon) Install(data manifest.Manifest) error {
 		}
 
 		for key, value := range data.GetMap("docker.parameters") {
-			doc.Docker.AddParameter(key, value.Unwrap())
+			doc.Docker.AddParameter(key, value.Unwrap().(string))
 		}
 
 		app.Container = doc
