@@ -126,6 +126,10 @@ func (p DeployMarathon) Install(data manifest.Manifest) error {
 			doc.Volume(vol.GetString("hostPath"), vol.GetString("containerPath"), vol.GetString("mode"))
 		}
 
+		for key, value := range data.GetMap("docker.parameters") {
+			doc.Docker.AddParameter(key, value.Unwrap())
+		}
+
 		app.Container = doc
 	}
 
