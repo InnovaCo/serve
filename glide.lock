@@ -1,5 +1,5 @@
 hash: d05c1737313601a3c06ab01925b6d74844703ad1c82c2b8f10ed902934de8653
-updated: 2017-02-14T15:13:24.726703611+03:00
+updated: 2017-02-14T18:23:40.679064856+03:00
 imports:
 - name: github.com/alecthomas/template
   version: a0175ee3bccc567396460bf5acd36800cb10c49c
@@ -43,19 +43,22 @@ imports:
   version: b4f4786f378c0c1d3336b5bb798094b166edf5a9
 - name: github.com/valyala/fasttemplate
   version: 3b874956e03f1636d171bda64b130f9135f42cff
+- name: golang.org/x/net
+  version: 61557ac0112b576429a0df080e1c2cef5dfbb642
+  subpackages:
+  - context
+  - context/ctxhttp
 - name: golang.org/x/sys
   version: 9bb9f0998d48b31547d975974935ae9b48c7a03c
   subpackages:
   - unix
 - name: gopkg.in/alecthomas/kingpin.v2
   version: e9044be3ab2a8e11d4e1f418d12f0790d57e8d70
-- name: gopkg.in/olivere/elastic.v2
-  version: be79ff0d0a9e360bba99e0a015888d0f414dc7bf
+- name: gopkg.in/olivere/elastic.v3
+  version: 9da4058517104766446811c87c0890f26c03d945
   subpackages:
   - backoff
   - uritemplates
-- name: gopkg.in/olivere/elastic.v3
-  version: 9da4058517104766446811c87c0890f26c03d945
 - name: gopkg.in/yaml.v2
   version: a5b47d31c556af34a302ce5d659e6fea44d90de0
 testImports: []
