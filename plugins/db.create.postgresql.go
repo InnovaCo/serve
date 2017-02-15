@@ -11,7 +11,8 @@ func init() {
 	manifest.PluginRegestry.Add("db.create.postgresql", DBCreatePostgresql{})
 }
 
-type DBCreatePostgresql struct{}
+type DBCreatePostgresql struct {
+}
 
 func (p DBCreatePostgresql) Run(data manifest.Manifest) error {
 	if data.GetBool("purge") {

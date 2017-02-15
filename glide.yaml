@@ -9,3 +9,4 @@ import:
   - package: github.com/cenk/backoff
   - package: github.com/docker/engine-api
   - package: github.com/valyala/fasttemplate
+  - package: gopkg.in/olivere/elastic.v3
