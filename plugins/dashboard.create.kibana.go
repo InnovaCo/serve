@@ -1,7 +1,6 @@
 package plugins
 
 import (
-	"encoding/json"
 	"log"
 
 	"gopkg.in/olivere/elastic.v3"
@@ -13,6 +12,11 @@ func init() {
 	manifest.PluginRegestry.Add("dashboard.create.kibana", DashboardCreateKibana{})
 
 }
+
+const (
+	kibanaIndex = "kibana-int"
+	kibanaType  = "dashboard"
+)
 
 type DashboardSettings struct {
 	User      string `json:"user"`
@@ -39,16 +43,26 @@ func (p DashboardCreateKibana) Create(data manifest.Manifest) error {
 		return err
 	}
 
+	termQuery := elastic.Query(elastic.NewTermQuery("title", data.GetString("dashboard.title")))
+	searchResult, err := client.Search().Index(kibanaIndex).Type(kibanaType).Query(termQuery).Do()
+	if err != nil {
+		return err
+	}
+	if searchResult.Hits.TotalHits > 0 {
+		log.Printf("dashboard %s exist\n", data.GetString("dashboard.title"))
+		return nil
+	}
+
 	ds := DashboardSettings{
 		User:      data.GetStringOr("user", "guest"),
 		Group:     data.GetStringOr("group", "guest"),
-		Title:     data.GetString("title"),
+		Title:     data.GetString("dashboard.title"),
 		Dashboard: data.GetTree("dashboard").String()}
 
 	_, err = client.Index().
-		Index("kibana-int").
-		Type("dashboard").
-		Id(data.GetString("title")).
+		Index(kibanaIndex).
+		Type(kibanaType).
+		Id(data.GetString("dashboard.title")).
 		BodyJson(&ds).
 		Do()
 	return err
@@ -60,9 +74,9 @@ func (p DashboardCreateKibana) Drop(data manifest.Manifest) error {
 		return err
 	}
 	_, err = client.Delete().
-		Index("kibana-int").
-		Type("dashboard").
-		Id(data.GetString("title")).
+		Index(kibanaIndex).
+		Type(kibanaType).
+		Id(data.GetString("dashboard.title")).
 		Do()
 	return err
 }
