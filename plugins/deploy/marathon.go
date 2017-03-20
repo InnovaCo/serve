@@ -127,7 +127,7 @@ func (p DeployMarathon) Install(data manifest.Manifest) error {
 		}
 
 		for key, value := range data.GetMap("docker.envs") {
-			app.AddEnv(strings.ToUpper(key), value.Unwrap().(string))
+			app.AddEnv(key, value.Unwrap().(string))
 		}
 
 		for _, parameter := range data.GetArray("docker.parameters") {
