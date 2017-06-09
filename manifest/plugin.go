@@ -2,7 +2,7 @@ package manifest
 
 import (
 	"log"
-
+	"fmt"
 	"github.com/fatih/color"
 )
 
@@ -23,6 +23,7 @@ type pluginRegestry struct {
 }
 
 func (r *pluginRegestry) Add(name string, plugin Plugin) {
+	fmt.Println("Add plugin name = ", name, " plugin = ", plugin, " in manifest.plugin");
 	if r.plugins == nil {
 		r.plugins = make(map[string]Plugin)
 	}

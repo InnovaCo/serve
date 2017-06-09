@@ -9,6 +9,7 @@ import (
 )
 
 func init() {
+	fmt.Println("Start init debian->build plugin in serve");
 	manifest.PluginRegestry.Add("build.debian", BuildDebian{})
 }
 
